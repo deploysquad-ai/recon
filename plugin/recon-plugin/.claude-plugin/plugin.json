@@ -1,0 +1,14 @@
+{
+  "name": "recon",
+  "description": "Build a structured AI knowledge graph in your Obsidian vault through natural conversation. Describes your project to Claude, which infers goals, personas, modules, features, and more — then writes them as linked Markdown nodes.",
+  "version": "0.1.4",
+  "author": {
+    "name": "DeploySquad",
+    "email": "hi@deploysquad.ai",
+    "url": "https://github.com/deploysquad-ai/recon"
+  },
+  "homepage": "https://github.com/deploysquad-ai/recon",
+  "repository": "https://github.com/deploysquad-ai/recon",
+  "license": "MIT",
+  "keywords": ["obsidian", "knowledge-graph", "ai", "project-management", "mcp", "context"]
+}

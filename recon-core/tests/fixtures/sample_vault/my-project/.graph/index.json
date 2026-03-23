@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-03-28T19:29:05.474198+00:00",
+  "project": "My Project",
+  "nodes": {
+    "Project - My Project.md": {
+      "type": "project",
+      "name": "My Project",
+      "status": "active",
+      "edges": {}
+    },
+    "constraints/Constraint - MIT License.md": {
+      "type": "constraint",
+      "name": "MIT License",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - My Project]]"
+        ]
+      }
+    },
+    "decisions/Decision - Use JWT.md": {
+      "type": "decision",
+      "name": "Use JWT",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Module - Auth]]"
+        ],
+        "governed_by": [
+          "[[Constraint - MIT License]]"
+        ]
+      }
+    },
+    "epics/Epic - Authentication.md": {
+      "type": "epic",
+      "name": "Authentication",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Module - Auth]]"
+        ],
+        "supports": [
+          "[[Goal - Fast Delivery]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "features/Feature - JWT Login.md": {
+      "type": "feature",
+      "name": "JWT Login",
+      "status": "draft",
+      "edges": {
+        "actors": [
+          "[[Persona - Developer]]"
+        ],
+        "belongs_to": [
+          "[[Module - Auth]]"
+        ],
+        "epic": [
+          "[[Epic - Authentication]]"
+        ],
+        "governed_by": [
+          "[[Constraint - MIT License]]"
+        ],
+        "implements": [
+          "[[User Story - Login]]"
+        ],
+        "supports": [
+          "[[Goal - Fast Delivery]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "goals/Goal - Fast Delivery.md": {
+      "type": "goal",
+      "name": "Fast Delivery",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - My Project]]"
+        ]
+      }
+    },
+    "modules/Module - Auth.md": {
+      "type": "module",
+      "name": "Auth",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - Developer]]"
+        ],
+        "belongs_to": [
+          "[[Project - My Project]]"
+        ],
+        "governed_by": [
+          "[[Constraint - MIT License]]"
+        ]
+      }
+    },
+    "personas/Persona - Developer.md": {
+      "type": "persona",
+      "name": "Developer",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - My Project]]"
+        ]
+      }
+    },
+    "user-stories/User Story - Login.md": {
+      "type": "user-story",
+      "name": "Login",
+      "status": "draft",
+      "edges": {
+        "actors": [
+          "[[Persona - Developer]]"
+        ],
+        "belongs_to": [
+          "[[Module - Auth]]"
+        ],
+        "supports": [
+          "[[Goal - Fast Delivery]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "versions/Version - MVP.md": {
+      "type": "version",
+      "name": "MVP",
+      "status": "draft",
+      "edges": {
+        "belongs_to": [
+          "[[Project - My Project]]"
+        ]
+      }
+    }
+  }
+}

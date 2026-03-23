@@ -1,0 +1,15 @@
+{
+  "name": "recon",
+  "description": "DeploySquad recon — Obsidian knowledge graph plugins for Claude Code",
+  "owner": {
+    "name": "DeploySquad",
+    "url": "https://github.com/deploysquad-ai"
+  },
+  "plugins": [
+    {
+      "name": "recon",
+      "source": "./plugin/recon-plugin",
+      "description": "Build a structured AI project graph in Obsidian through natural conversation. Invoke with /recon:recon."
+    }
+  ]
+}

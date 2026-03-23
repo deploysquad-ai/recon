@@ -1,0 +1,53 @@
+# Worktrees
+.worktrees/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Superpowers (brainstorm server + generated specs/plans)
+.superpowers/
+docs/superpowers/
+
+# Claude Code local settings
+.claude/settings.json
+.claude/settings.local.json
+.claude/settings.json.bak
+
+# Internal planning and task docs
+docs/plans/
+docs/tasks/
+docs/feedback/
+
+# Demo vaults (except the primary dogfood vault)
+dogfood-vault/task-manager-demo/
+
+# Old/internal skill paths
+skill/openclaw/
+
+# Large binary assets (host on GitHub Releases instead)
+assets/*.mp4
+assets/*.mov
+assets/*.MP4
+assets/*.MOV

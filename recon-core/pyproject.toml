@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deploysquad-recon-core"
+version = "0.1.8"
+description = "Build a structured AI knowledge graph in Obsidian through natural conversation"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "DeploySquad", email = "hi@deploysquad.ai" },
+]
+keywords = [
+    "obsidian", "knowledge-graph", "ai", "claude", "mcp",
+    "project-management", "llm", "context",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.0",
+    "python-frontmatter>=1.0",
+    "mcp[cli]>=1.0",
+]
+
+[project.optional-dependencies]
+embed = [
+    "google-generativeai>=0.8,<2",
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/deploysquad-ai/recon"
+Repository = "https://github.com/deploysquad-ai/recon"
+"Bug Tracker" = "https://github.com/deploysquad-ai/recon/issues"
+
+[project.scripts]
+recon-server = "deploysquad_recon_core.mcp_server:main"
+deploysquad-recon-core = "deploysquad_recon_core.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "recon": {
+      "command": "uvx",
+      "args": ["deploysquad-recon-core"]
+    }
+  }
+}

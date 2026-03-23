@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-03-24T05:44:54.294093+00:00",
+  "project": "obsidian-spec-graph",
+  "nodes": {
+    "Project - obsidian-spec-graph.md": {
+      "type": "project",
+      "name": "obsidian-spec-graph",
+      "status": "active",
+      "edges": {}
+    },
+    "constraints/Constraint - Markdown Source of Truth.md": {
+      "type": "constraint",
+      "name": "Markdown Source of Truth",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    },
+    "constraints/Constraint - Obsidian Compatibility.md": {
+      "type": "constraint",
+      "name": "Obsidian Compatibility",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    },
+    "decisions/Decision - Heuristic Linking for MVP.md": {
+      "type": "decision",
+      "name": "Heuristic Linking for MVP",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    },
+    "decisions/Decision - LLM as Conversational UI.md": {
+      "type": "decision",
+      "name": "LLM as Conversational UI",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Module - Agent CLI]]"
+        ]
+      }
+    },
+    "decisions/Decision - Two-Phase Authoring.md": {
+      "type": "decision",
+      "name": "Two-Phase Authoring",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    },
+    "epics/Epic - Graph Authoring System.md": {
+      "type": "epic",
+      "name": "Graph Authoring System",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Module - Agent CLI]]"
+        ],
+        "supports": [
+          "[[Goal - Structured Graph Authoring]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "epics/Epic - Handoff Pipeline.md": {
+      "type": "epic",
+      "name": "Handoff Pipeline",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Module - Context Builder]]"
+        ],
+        "supports": [
+          "[[Goal - Spec-Kit Handoff]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "features/Feature - Create Node via Tool Call.md": {
+      "type": "feature",
+      "name": "Create Node via Tool Call",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - LLM Agent]]"
+        ],
+        "belongs_to": [
+          "[[Module - Graph Core]]"
+        ],
+        "epic": [
+          "[[Epic - Graph Authoring System]]"
+        ],
+        "governed_by": [
+          "[[Constraint - Markdown Source of Truth]]"
+        ],
+        "implements": [
+          "[[User Story - Validate Node Data]]"
+        ],
+        "supports": [
+          "[[Goal - Structured Graph Authoring]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "features/Feature - Generate CONTEXT.md.md": {
+      "type": "feature",
+      "name": "Generate CONTEXT.md",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - Product Developer]]"
+        ],
+        "belongs_to": [
+          "[[Module - Context Builder]]"
+        ],
+        "epic": [
+          "[[Epic - Handoff Pipeline]]"
+        ],
+        "governed_by": [
+          "[[Constraint - Markdown Source of Truth]]"
+        ],
+        "implements": [
+          "[[User Story - Generate Context Bundle]]"
+        ],
+        "supports": [
+          "[[Goal - Spec-Kit Handoff]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "features/Feature - Interactive Authoring Session.md": {
+      "type": "feature",
+      "name": "Interactive Authoring Session",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - Product Developer]]",
+          "[[Persona - LLM Agent]]"
+        ],
+        "belongs_to": [
+          "[[Module - Agent CLI]]"
+        ],
+        "depends_on": [
+          "[[Feature - Create Node via Tool Call]]"
+        ],
+        "epic": [
+          "[[Epic - Graph Authoring System]]"
+        ],
+        "implements": [
+          "[[User Story - Author Project Graph]]"
+        ],
+        "supports": [
+          "[[Goal - Structured Graph Authoring]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "goals/Goal - Spec-Kit Handoff.md": {
+      "type": "goal",
+      "name": "Spec-Kit Handoff",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    },
+    "goals/Goal - Structured Graph Authoring.md": {
+      "type": "goal",
+      "name": "Structured Graph Authoring",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    },
+    "modules/Module - Agent CLI.md": {
+      "type": "module",
+      "name": "Agent CLI",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - Product Developer]]",
+          "[[Persona - LLM Agent]]"
+        ],
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ],
+        "depends_on": [
+          "[[Module - Graph Core]]"
+        ]
+      }
+    },
+    "modules/Module - Context Builder.md": {
+      "type": "module",
+      "name": "Context Builder",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - Product Developer]]"
+        ],
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ],
+        "governed_by": [
+          "[[Constraint - Markdown Source of Truth]]"
+        ]
+      }
+    },
+    "modules/Module - Graph Core.md": {
+      "type": "module",
+      "name": "Graph Core",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - LLM Agent]]"
+        ],
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ],
+        "governed_by": [
+          "[[Constraint - Markdown Source of Truth]]"
+        ]
+      }
+    },
+    "personas/Persona - LLM Agent.md": {
+      "type": "persona",
+      "name": "LLM Agent",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    },
+    "personas/Persona - Product Developer.md": {
+      "type": "persona",
+      "name": "Product Developer",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    },
+    "user-stories/User Story - Author Project Graph.md": {
+      "type": "user-story",
+      "name": "Author Project Graph",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - Product Developer]]"
+        ],
+        "belongs_to": [
+          "[[Module - Agent CLI]]"
+        ],
+        "supports": [
+          "[[Goal - Structured Graph Authoring]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "user-stories/User Story - Generate Context Bundle.md": {
+      "type": "user-story",
+      "name": "Generate Context Bundle",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - Product Developer]]"
+        ],
+        "belongs_to": [
+          "[[Module - Context Builder]]"
+        ],
+        "supports": [
+          "[[Goal - Spec-Kit Handoff]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "user-stories/User Story - Validate Node Data.md": {
+      "type": "user-story",
+      "name": "Validate Node Data",
+      "status": "active",
+      "edges": {
+        "actors": [
+          "[[Persona - LLM Agent]]"
+        ],
+        "belongs_to": [
+          "[[Module - Graph Core]]"
+        ],
+        "supports": [
+          "[[Goal - Structured Graph Authoring]]"
+        ],
+        "target_version": [
+          "[[Version - MVP]]"
+        ]
+      }
+    },
+    "versions/Version - MVP.md": {
+      "type": "version",
+      "name": "MVP",
+      "status": "active",
+      "edges": {
+        "belongs_to": [
+          "[[Project - obsidian-spec-graph]]"
+        ]
+      }
+    }
+  }
+}
