@@ -30,6 +30,8 @@ You describe your project. Claude infers goals, personas, modules, decisions, an
 
 The graph then feeds focused context back to any AI session via `generate_context()` — so Claude always knows what you're building, every session.
 
+![Obsidian graph view](assets/obsidian-graph.png)
+
 ---
 
 ## The loop
