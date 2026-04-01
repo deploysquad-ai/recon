@@ -46,8 +46,3 @@ dogfood-vault/task-manager-demo/
 # Old/internal skill paths
 skill/openclaw/
 
-# Large binary assets (host on GitHub Releases instead)
-assets/*.mp4
-assets/*.mov
-assets/*.MP4
-assets/*.MOV
