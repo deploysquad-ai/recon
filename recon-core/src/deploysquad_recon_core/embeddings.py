@@ -159,7 +159,7 @@ def embed_nodes(project_dir: Path, api_key: str | None = None) -> dict:
         # Need to embed — call API
         try:
             result = genai.embed_content(
-                model="models/text-embedding-004",
+                model="models/gemini-embedding-001",
                 content=text,
             )
             vector = result["embedding"]
