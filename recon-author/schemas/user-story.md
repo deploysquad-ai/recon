@@ -1,5 +1,7 @@
 # Schema: User Story
 
+> Goal: each User Story captures one user-facing behavior precisely enough that QA can write tests directly from the Acceptance Criteria and implementers know what they must build.
+
 ## Fields
 
 | Field | Type | Required | Notes |
@@ -17,26 +19,38 @@
 
 ## Body Sections
 
-- `## Story` — The Connextra sentence: "As a [Persona], I want [goal], so that [benefit]." Exactly one sentence.
-- `## Acceptance Criteria` — Testable conditions for "done." Markdown checklist, 2-5 items. Each item is one observable outcome. Plain English is acceptable; Gherkin (Given/When/Then) is preferred when the story will go to QA.
-- `## Rationale` — Why this story exists. 2-4 sentences. Not a restatement of the benefit clause — add context about what problem prompted this story.
-- `## Notes` — (Optional) Edge cases, known constraints, or open questions. Delete if empty.
+- `## Story` — **REQUIRED.** The Connextra sentence: "As a [Persona], I want [goal], so that [benefit]." Exactly one sentence. If you need two, you have two stories.
+
+- `## Acceptance Criteria` — **REQUIRED.** Markdown checklist, 3-7 items. Each criterion is one observable outcome and must be falsifiable. Gherkin (Given/When/Then) is preferred when the story will go to QA; plain English is acceptable otherwise. Cover the happy path *and* at least one failure or edge case.
+
+- `## Rationale` — **REQUIRED.** 2-4 sentences. Why this story exists — what problem or moment prompted it. Write for a future reader with no context.
+
+- `## Preconditions` — **OPTIONAL but preferred.** State, permissions, data, or feature flags that must already be true before the story applies. One bullet each.
+
+- `## Interaction Flow` — **OPTIONAL.** Short step-by-step sketch of the user's interaction (4-8 steps) for stories with non-trivial flow. Useful for features with multi-step UIs or back-and-forth protocols.
+
+- `## Edge Cases` — **OPTIONAL but preferred.** 2-4 bullets on known tricky situations: empty states, concurrent actions, partial failure, permission boundaries. Each becomes a test.
+
+- `## Notes` — **OPTIONAL.** Open questions, linked Decisions, or temporary constraints. Omit if empty.
 
 ## Writing Guidance
 
-- **Story**: One sentence, one pass. If you need more than one sentence, you have two stories.
-- **Acceptance Criteria**: Each criterion must be falsifiable. "The user can log in" is not a criterion. "Given valid credentials, when the user submits the login form, the system returns a JWT token and a 200 response" is. Cap at 5; more means the story should be split.
-- **Rationale**: Write for a future reader with no context. Answer: "Why did the team write this story?"
-- **Notes**: Short, direct, flagged with the open question or constraint.
+- **Story**: One sentence, one pass.
+- **Acceptance Criteria**: Each criterion must be falsifiable. "The user can log in" fails the test; "Given valid credentials, when the user submits the form, the system returns a JWT and a 200 response" passes it.
+- **Rationale**: Answer "why did the team write this story?" — not a restatement of the benefit clause.
+- **Preconditions**: State the world before the trigger. "User has verified their email."
+- **Edge Cases**: Name the situation concretely. "User tries to submit twice within the network round-trip" beats "network issues."
 
 ## Notes
 
-- Non-functional requirements should be modeled as Constraint nodes, not User Stories
-- User Stories capture user-facing behavior only
-- Acceptance criteria are in the body, not frontmatter
+- Non-functional requirements belong on Constraint nodes, not User Stories.
+- User Stories capture user-facing behavior only.
+- Acceptance criteria live in the body, not frontmatter.
 
 ## Question Prompts (fallback — use only if not inferable)
 
 1. "Who is this story for?" (maps to actors)
-2. "What do they want to do?"
-3. "How do you know it is done?" (maps to Acceptance Criteria body section)
+2. "What do they want to do, and why?" (Story + Rationale)
+3. "How do you know it is done?" (Acceptance Criteria)
+4. "What must be true before the story applies?" (Preconditions)
+5. "What edge cases or failure paths matter?"

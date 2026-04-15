@@ -31,6 +31,15 @@ def test_implements_min_one():
         )
 
 
+def test_belongs_to_must_be_module():
+    with pytest.raises(ValidationError):
+        FeatureNode(
+            type="feature", name="X", status="draft",
+            belongs_to="[[Project - Y]]",
+            implements=["[[User Story - Z]]"],
+        )
+
+
 def test_actors_must_be_personas():
     with pytest.raises(ValidationError):
         FeatureNode(

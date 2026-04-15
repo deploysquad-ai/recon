@@ -1,5 +1,7 @@
 # Schema: Constraint
 
+> Goal: each Constraint is a hard rule the project must honor. Detailed enough that a downstream designer can tell whether a proposed Decision or Feature violates it.
+
 ## Fields
 
 | Field | Type | Required | Notes |
@@ -13,18 +15,30 @@
 
 ## Body Sections
 
-- `## Description` — A precise statement of what is required or prohibited, written as a rule: "All X must Y" or "No X may Z." Include one sentence on why this constraint exists (regulatory, technical, business). 2-4 sentences.
-- `## Scope` — What systems, modules, features, or decisions this constraint applies to. Bullet list (3-6 items). Include "does not apply to" if the boundary is non-obvious.
-- `## Implications` — What a developer or designer must do (or not do) as a result. Actionable consequences: what choices it forecloses, what patterns it requires. 2-5 bullets.
+- `## Description` — **REQUIRED.** 2-4 sentences. Open with the rule in imperative or declarative form ("All X must Y" / "No X may Z"). Follow with one or two sentences on origin and why it exists (regulatory, technical, business, contractual).
+
+- `## Scope` — **REQUIRED unless the constraint is unambiguously project-wide.** 3-6 bullets naming the systems, modules, features, or decision categories this applies to. Include "does not apply to" when the boundary is non-obvious. Avoid vague terms like "everything."
+
+- `## Implications` — **REQUIRED.** 3-6 bullets of actionable developer- or designer-facing consequences. What this forecloses, what patterns it requires, what extra work it triggers. A reviewer should be able to use it as a checklist when judging a design.
+
+- `## Verification` — **OPTIONAL but preferred.** How compliance is demonstrated: test, review gate, lint rule, audit, runtime check. Name the mechanism and where it lives.
+
+- `## Rationale` — **OPTIONAL.** 2-4 sentences on the underlying reason, especially if the constraint is likely to be questioned. Cite the source (regulation, contract clause, prior incident, architectural principle).
+
+- `## Exceptions` — **OPTIONAL.** Known carve-outs and the conditions under which they apply. Omit the section if none exist.
 
 ## Writing Guidance
 
-- **Description**: Open with the constraint rule in the imperative or declarative. "All user data must be encrypted at rest and in transit." Then one sentence of origin.
-- **Scope**: List specific modules, systems, or feature categories — not vague terms like "everything."
-- **Implications**: Developer-facing. "This means we cannot use X, we must implement Y."
+- **Description**: Rule first, origin second. Present tense, declarative.
+- **Scope**: Name specific modules or categories. If you find yourself writing "everything," narrow it.
+- **Implications**: Developer-facing commands. "This means we cannot use X; we must implement Y."
+- **Verification**: Point at the artifact. "Enforced by CI lint rule X," not "checked during review."
+- **Rationale**: Quote the source where possible. Future readers will question constraints that lack this.
 
 ## Question Prompts (fallback — use only if not inferable)
 
 1. "What does this constraint require or prohibit?"
-2. "What does it apply to?"
-3. "What are the practical implications for developers?"
+2. "Where does it come from? (regulation, contract, architecture)"
+3. "What does it apply to, and what does it not apply to?"
+4. "What are the practical implications for developers?"
+5. "How do we verify compliance?"
