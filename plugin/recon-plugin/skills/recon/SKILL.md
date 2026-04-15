@@ -62,6 +62,11 @@ The question prompts in each schema file are FALLBACK guidance — use them only
 | `resolve_links_tool` | `resolve_links_tool()` | Check all wikilinks |
 | `build_index_tool` | `build_index_tool()` | Rebuild .graph/index.json |
 | `generate_context_tool` | `generate_context_tool(feature_name)` | Generate CONTEXT.md |
+| `get_authoring_guide_tool` | `get_authoring_guide_tool(node_type)` | Load detailed schema + body guidance for a node type |
+
+## Authoring Guides (lazy)
+
+Before authoring any node of a given type for the first time in this session, call `get_authoring_guide_tool(node_type)` to load the detailed schema, required/optional body sections, writing guidance, and fallback question prompts. Cache the result in this session; do not re-fetch for subsequent nodes of the same type. The cheat sheet below is enough to draft a stub and choose the right tool call, but the full guide is the source of truth — especially for richer node types (Feature, Decision, Module, Persona).
 
 `data` is a dict of frontmatter fields. `node_type` and `schema_version` are auto-filled by `create_node_tool`. `body_sections` is an optional dict of `{"## Heading": "content"}`.
 
@@ -158,205 +163,32 @@ Never write a wikilink to a node that does not yet exist. If you need to referen
 
 ---
 
-# Schema Reference
+# Schema Cheat Sheet
 
-## Project
+Minimal field reference for drafting stubs. **For required body sections, optional body sections, writing guidance, and fallback question prompts, call `get_authoring_guide_tool(node_type)` the first time you author each type.**
 
-| Field | Type | Required | Notes |
+Every node auto-fills `type` and `schema_version`. `tags` is auto-managed by recon-core.
+
+| Node type | Required fields (beyond `name`, `status`) | Status values | Typical `belongs_to` target |
 |---|---|---|---|
-| type | `"project"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | canonical project name |
-| status | `draft` / `active` / `complete` / `archived` | yes | default: `draft` |
-| description | string | yes | one-line summary, max 120 chars |
+| `project` | `description` (string, 50+ chars) | draft / active / complete / archived | — |
+| `goal` | `belongs_to` | draft / active / complete / archived | Project |
+| `persona` | `belongs_to` | draft / active / archived | Project |
+| `constraint` | `belongs_to` | draft / active / archived | Project |
+| `module` | `belongs_to` | draft / active / archived | Project |
+| `decision` | `belongs_to` (Project OR Module, exactly one) | draft / active / archived | Project or Module |
+| `user-story` | `belongs_to`, `actors` (min 1 Persona) | draft / active / complete / archived | Module |
+| `epic` | `belongs_to` | draft / active / archived | Module |
+| `feature` | `belongs_to` (**Module only**, enforced), `implements` (min 1 User Story) | draft / active / complete / archived | Module |
+| `version` | `belongs_to`, `sequence` (int >= 1) | draft / active / complete / archived | Project |
 
-**Body Sections:**
-- `## Description` — expanded project overview
-- `## Scope` — what is in/out of scope
+Validator constraints enforced by recon-core (will reject tool calls that violate):
 
----
+- `actors` fields must reference `[[Persona - ...]]`.
+- `Decision.governed_by` must reference `[[Constraint - ...]]` only (never another Decision — link Decision→Decision via `related_to`).
+- `Feature.belongs_to` must reference `[[Module - ...]]`.
 
-## Goal
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"goal"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | short goal name |
-| status | `draft` / `active` / `complete` / `archived` | yes | default: `draft` |
-| belongs_to | wikilink | yes | `[[Project - <name>]]` |
-| related_to | list[wikilink] | no | other Goals or any node type |
-
-**Body Sections:**
-- `## Description` — what this goal aims to achieve and why it matters
-- `## Success Criteria` — how you know this goal has been achieved; measurable where possible
-
----
-
-## Persona
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"persona"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | who or what this persona is |
-| status | `draft` / `active` / `archived` | yes | default: `active`. NO `complete` status. |
-| belongs_to | wikilink | yes | `[[Project - <name>]]` |
-| goals | list[string] | yes | plain strings, NOT wikilinks. What this persona is trying to achieve. |
-| context | string | yes | background, technical proficiency, usage patterns |
-| related_to | list[wikilink] | no | other Personas (e.g. Admin is a type of User) |
-
-**Body Sections:**
-- `## Description` — who this persona is and what they do in the context of this project
-
-**Notes:** Personas are project-scoped, not module-scoped. Referenced by Features, Modules, and User Stories via the `actors` field. Shared personas between nodes is a strong signal for proposing links during the linking pass.
-
----
-
-## Constraint
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"constraint"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | short, descriptive constraint name |
-| status | `draft` / `active` / `archived` | yes | default: `active`. NO `complete` status. |
-| belongs_to | wikilink | yes | `[[Project - <name>]]` |
-| related_to | list[wikilink] | no | other Constraints |
-
-**Body Sections:**
-- `## Description` — what this constraint requires and why it exists
-- `## Scope` — what systems, modules, or features this constraint applies to
-
----
-
-## Module
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"module"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | functional subsystem name |
-| status | `draft` / `active` / `complete` / `archived` | yes | default: `draft` |
-| belongs_to | wikilink | yes | `[[Project - <name>]]` |
-| actors | list[wikilink] | no | Persona references: `[[Persona - <name>]]` |
-| depends_on | list[wikilink] | no | other Modules |
-| governed_by | list[wikilink] | no | Constraints and/or Decisions |
-| related_to | list[wikilink] | no | other Modules |
-
-**Body Sections:**
-- `## Description` — what this module is responsible for
-
-**Notes:** Modules are flat — a Module belongs to a Project only, never to another Module. Modules are technical decomposition; Epics are product-level work streams.
-
----
-
-## Decision
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"decision"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | short ADR-style title |
-| status | `draft` / `active` / `archived` | yes | default: `active`. NO `complete` status. |
-| belongs_to | wikilink | yes | `[[Project - <name>]]` OR `[[Module - <name>]]` — exactly one |
-| governed_by | list[wikilink] | no | Constraints ONLY. A Decision cannot be governed_by another Decision. |
-| related_to | list[wikilink] | no | Features, other Decisions |
-
-**Body Sections:**
-- `## Context` — why this decision was needed
-- `## Decision` — what was decided and why
-- `## Rationale` — deeper reasoning if needed
-- `## Alternatives Considered` — options that were not chosen
-
----
-
-## User Story
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"user-story"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | short story name |
-| status | `draft` / `active` / `complete` / `archived` | yes | default: `draft` |
-| belongs_to | wikilink | yes | `[[Module - <name>]]` |
-| actors | list[wikilink] | yes, min 1 | Persona references: `[[Persona - <name>]]` |
-| supports | list[wikilink] | no | Goal references: `[[Goal - <name>]]` |
-| target_version | wikilink | no | `[[Version - <name>]]` — assigned during version pass, not authoring |
-| governed_by | list[wikilink] | no | Constraints and/or Decisions |
-| related_to | list[wikilink] | no | other User Stories |
-
-**Body Sections:**
-- `## Story` — "As a [persona], I want [goal], so that [benefit]."
-- `## Acceptance Criteria` — testable conditions for "done" (required; pass as `body_sections` not `data`)
-- `## Rationale` — why this story exists
-
-**Notes:** Non-functional requirements should be modeled as Constraint nodes, not User Stories. User Stories capture user-facing behavior only.
-
----
-
-## Epic
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"epic"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | product-level work stream name |
-| status | `draft` / `active` / `archived` | yes | default: `draft`. NO `complete` status. |
-| belongs_to | wikilink | yes | `[[Module - <name>]]` |
-| target_version | wikilink | no | `[[Version - <name>]]` — assigned during version pass |
-| supports | list[wikilink] | no | Goal references: `[[Goal - <name>]]` |
-| related_to | list[wikilink] | no | other Epics |
-
-**Body Sections:**
-- `## Description` — what this epic delivers as a user-facing outcome
-
-**Notes:** Epics group related Features into product-level bodies of work. Features reference their Epic via the optional `epic` field. Modules are technical decomposition; Epics are product-level work streams — they may cross-cut differently.
-
----
-
-## Feature
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"feature"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | feature name |
-| status | `draft` / `active` / `complete` / `archived` | yes | default: `draft` |
-| belongs_to | wikilink | yes | `[[Module - <name>]]` |
-| implements | list[wikilink] | yes, min 1 | User Story references: `[[User Story - <name>]]` |
-| actors | list[wikilink] | no | Persona references: `[[Persona - <name>]]` |
-| supports | list[wikilink] | no | Goal references: `[[Goal - <name>]]` |
-| target_version | wikilink | no | `[[Version - <name>]]` — assigned during version pass |
-| epic | wikilink | no | `[[Epic - <name>]]` — product-level grouping |
-| depends_on | list[wikilink] | no | Features or Modules |
-| governed_by | list[wikilink] | no | Constraints and/or Decisions |
-| related_to | list[wikilink] | no | other Features |
-
-**Body Sections:**
-- `## Description` — brief summary of what this feature does
-- `## Scope` — what is in/out of scope for this feature
-
-**Notes:** The Feature body is managed by spec-kit after handoff. Keep it brief during graph authoring. Acceptance criteria live on the User Story nodes this Feature implements. If no User Story exists yet, create a stub User Story with `status: draft` first.
-
----
-
-## Version
-
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| type | `"version"` | auto-filled | |
-| schema_version | `1` | auto-filled | |
-| name | string | yes | e.g. "MVP", "v1.0", "Beta" |
-| status | `draft` / `active` / `complete` / `archived` | yes | default: `draft` |
-| belongs_to | wikilink | yes | `[[Project - <name>]]` |
-| sequence | integer | yes | ordering within the project (1 = first). Must be >= 1. |
-| target_date | string | no | `YYYY-MM-DD` format |
-
-**Body Sections:**
-- `## Description` — what is in/out of scope for this version
-
-**Notes:** Versions are authored late — after Features, User Stories, and Epics exist. After Version creation, a version assignment pass assigns `target_version` to relevant nodes.
+Wikilink format: `[[Type - Name]]` — no `.md` suffix. Frontmatter `name` must match the filename.
 
 ---
 

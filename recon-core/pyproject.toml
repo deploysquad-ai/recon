@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "deploysquad-recon-core"
-version = "0.1.9"
+version = "0.2.0"
 description = "Build a structured AI knowledge graph in Obsidian through natural conversation"
 readme = "README.md"
 license = { text = "MIT" }
@@ -52,6 +52,9 @@ deploysquad-recon-core = "deploysquad_recon_core.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+deploysquad_recon_core = ["authoring_guides/*.md"]
 
 
 [tool.pytest.ini_options]

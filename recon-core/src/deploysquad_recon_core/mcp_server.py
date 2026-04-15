@@ -72,6 +72,38 @@ def configure_vault_tool(vault_path: str) -> str:
     })
 
 
+_VALID_NODE_TYPES = {
+    "project", "goal", "persona", "constraint", "module",
+    "decision", "user-story", "epic", "feature", "version",
+}
+
+
+@mcp.tool()
+def get_authoring_guide_tool(node_type: str) -> str:
+    """Return the detailed authoring guide for a node type.
+
+    Call this before authoring a node of a given type for the first time in a
+    session — it returns the full schema, body section guidance, writing tips,
+    and fallback question prompts the LLM should follow. Cache the result for
+    subsequent nodes of the same type in the same session.
+
+    Args:
+        node_type: One of: project, goal, persona, constraint, module,
+                   decision, user-story, epic, feature, version.
+    """
+    if node_type not in _VALID_NODE_TYPES:
+        return _serialize_error(ValueError(
+            f"Unknown node_type: {node_type!r}. Valid types: {sorted(_VALID_NODE_TYPES)}"
+        ))
+    try:
+        from importlib.resources import files
+        guide_path = files("deploysquad_recon_core") / "authoring_guides" / f"{node_type}.md"
+        content = guide_path.read_text(encoding="utf-8")
+        return json.dumps({"node_type": node_type, "guide": content})
+    except Exception as e:
+        return _serialize_error(e)
+
+
 @mcp.tool()
 def create_node_tool(
     node_type: str,

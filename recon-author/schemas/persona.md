@@ -1,5 +1,7 @@
 # Schema: Persona
 
+> Goal: each Persona grounds features and user stories in a specific person — detailed enough that designers, PMs, and implementers can simulate their behavior and reactions.
+
 ## Fields
 
 | Field | Type | Required | Notes |
@@ -13,28 +15,38 @@
 
 ## Body Sections
 
-- `## Description` — Who this persona is in 2-3 sentences. Their role, their relationship to the product, what they do day-to-day. Do not put goals here.
-- `## Background` — Technical proficiency, relevant experience, tools they already use, how they currently solve the problem. 3-5 sentences.
-- `## Goals` — What this persona is trying to achieve. Bulleted list (3-5 items) followed by 1-2 sentences elaborating the most important goal. Distinguish outcome goals ("complete the report without errors") from experience goals ("feel confident, not confused").
-- `## Pain Points` — Current frustrations. 3-5 bullet points. Each should be specific and behavioral, traceable to a moment in their workflow.
-- `## Scenarios` — (Optional) One brief paragraph (4-6 sentences) describing this persona in a representative situation using the product.
+- `## Description` — **REQUIRED.** 2-4 sentences. Role, relationship to the product, what they do day-to-day, and the values or constraints that shape their behavior. One specific person, not a class.
+
+- `## Background` — **REQUIRED for external / user-facing personas; OPTIONAL for internal stakeholders.** Technical proficiency, relevant experience, tools they already use, how they currently solve the problem. 3-5 sentences with specifics (named tools, seniority, domain vocabulary).
+
+- `## Goals` — **REQUIRED for external personas; OPTIONAL for internal.** Bulleted list (3-5 items) followed by 1-2 sentences on the most important goal. Distinguish outcome goals ("ship the report by Friday") from experience goals ("feel confident, not confused").
+
+- `## Pain Points` — **REQUIRED for external personas; OPTIONAL for internal.** 3-5 bullets. Each specific and behavioral, traceable to a moment in their workflow. "Copies numbers between two tools every Monday" — not "finds it inefficient."
+
+- `## Decision Authority` — **OPTIONAL.** What this persona can decide unilaterally, what needs approval, who blocks them. Useful for personas that drive procurement, compliance, or cross-team coordination.
+
+- `## Scenarios` — **OPTIONAL but preferred.** One or two short narratives (4-6 sentences each) of this persona in a representative situation. Start from a trigger; end with success or frustration. These feed directly into User Story authoring.
+
+- `## Success Looks Like` — **OPTIONAL.** 2-3 bullets describing observable behaviors after the project ships — not sentiments.
 
 ## Writing Guidance
 
-- **Description**: Third person, present tense. "Sarah is a mid-level analyst..." Concrete, specific, one person.
-- **Background**: Skills-and-context inventory. Avoid generic ("tech-savvy") — be specific ("uses Excel and Tableau but has never written SQL").
-- **Goals**: Outcome-oriented ("ship the report by Friday") not task-oriented ("click the export button").
-- **Pain Points**: "Has to copy numbers manually between two tools every Monday" is useful. "Finds the process inefficient" is not.
-- **Scenarios**: Short narrative starting from a trigger. End with success or current frustration.
+- **Description**: Third person, present tense. Concrete. "Sarah is a mid-level analyst on the pricing team..."
+- **Background**: Specifics beat adjectives. "Uses Excel and Tableau, has never written SQL" beats "tech-savvy."
+- **Goals**: Outcome-oriented, not task-oriented.
+- **Pain Points**: Each must be traceable to a moment. If you can't say when it happens, it's not a pain point yet.
+- **Scenarios**: Trigger → steps → outcome. These become seeds for User Stories.
 
 ## Notes
 
-- Personas are project-scoped, not module-scoped
-- Referenced by Features, Modules, and User Stories via the `actors` field
-- Shared personas between nodes is a strong signal for proposing links during the linking pass
+- Personas are project-scoped, not module-scoped.
+- Referenced by Features, Modules, and User Stories via the `actors` field.
+- Shared personas across nodes are a strong signal for link suggestions in Phase 2.
 
 ## Question Prompts (fallback — use only if not inferable)
 
-1. "Who is this persona?"
-2. "What are they trying to achieve?"
-3. "What frustrates them about the current way they do this?"
+1. "Who is this persona, and what is their role?"
+2. "What tools and skills do they bring to this work?"
+3. "What are they trying to achieve?"
+4. "What frustrates them about the current state?"
+5. "What would success feel like for them?"

@@ -30,3 +30,10 @@ class FeatureNode(BaseNode):
             if not link.startswith("[[Persona - "):
                 raise ValueError(f"actors must reference Personas, got: {link}")
         return v
+
+    @field_validator("belongs_to")
+    @classmethod
+    def belongs_to_must_be_module(cls, v: str) -> str:
+        if not v.startswith("[[Module - "):
+            raise ValueError(f"Feature belongs_to must reference a Module, got: {v}")
+        return v
