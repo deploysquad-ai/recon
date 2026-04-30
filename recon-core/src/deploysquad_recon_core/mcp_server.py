@@ -50,13 +50,15 @@ def get_vault_status_tool() -> str:
 
 @mcp.tool()
 def configure_vault_tool(vault_path: str) -> str:
-    """Set the vault path for this session. Call this after the user provides their vault path.
+    """Set the vault path for this session. Every recon-touching skill calls this in its preflight.
 
     Args:
-        vault_path: Absolute path to the Obsidian vault directory.
+        vault_path: Absolute path to the Obsidian vault directory (typically the project root).
 
     Updates the in-memory PROJECT_DIR so all subsequent tool calls use the new path.
-    The caller (skill) should also persist this to settings.json for future sessions.
+    Do NOT persist this to settings.json — every skill's preflight calls configure_vault_tool
+    afresh. Persisting would race between concurrent Claude Code sessions on different repos.
+    See project-local-vault-spec.md §4 for rationale.
     """
     global PROJECT_DIR
     expanded = Path(os.path.expanduser(vault_path)).resolve()

@@ -13,10 +13,33 @@ You do NOT write files directly. You call `recon-core` tools. The tools validate
 
 ## On Start
 
-1. Call `get_vault_status_tool()`. If `is_configured` is `false`: ask the user for their vault path, call `configure_vault_tool(vault_path="<path>")`, then persist to settings.json (see `/recon` skill for the exact command). Continue once configured.
-2. Call `build_index_tool()` and `list_nodes_tool()` to load current graph state
-3. Call `embed_nodes_tool(project_dir)` to ensure the embedding cache is current
-4. Present: "Found [N] nodes in [Project Name]. What would you like to add or update?"
+**Preflight (silent — must complete before any other tool call).**
+
+1. Resolve the project root:
+
+   ```bash
+   git rev-parse --show-toplevel 2>/dev/null || pwd
+   ```
+
+   Capture as `<project_root>`.
+
+2. Call `configure_vault_tool(vault_path="<project_root>")`. This updates the MCP server's in-memory project directory for this session. It must succeed before you call any other recon tool. Do not persist `VAULT_PATH` anywhere — every preflight resets it.
+
+3. Check the Gemini env. If unset, print exactly one line; otherwise print nothing.
+
+   ```bash
+   [ -n "$GEMINI_API_KEY" ] && echo "set" || echo "missing"
+   ```
+
+   On `missing`:
+
+   > Tip: `GEMINI_API_KEY` is not set — semantic linking is disabled (heuristic linking still works). To enable, add `export GEMINI_API_KEY=your-key` to your shell rc (`~/.zshrc` or `~/.bashrc`), then restart Claude Code. Free key: https://aistudio.google.com/apikey
+
+**Then proceed with the maintenance flow:**
+
+4. Call `build_index_tool()` and `list_nodes_tool()` to load current graph state.
+5. Call `embed_nodes_tool()` to ensure the embedding cache is current.
+6. Present: "Found [N] nodes in [Project Name]. What would you like to add or update?"
 
 ## Tool-Calling Contract
 
@@ -29,8 +52,8 @@ You do NOT write files directly. You call `recon-core` tools. The tools validate
 | `resolve_links_tool` | `resolve_links_tool()` | Check all wikilinks |
 | `build_index_tool` | `build_index_tool()` | Rebuild .graph/index.json |
 | `generate_context_tool` | `generate_context_tool(feature_name, output_path?)` | Generate CONTEXT.md (optionally write to disk) |
-| `embed_nodes_tool` | `embed_nodes_tool(project_dir)` | Embed all nodes, update cache |
-| `find_similar_tool` | `find_similar_tool(node_path, project_dir, top_k?, threshold?)` | Find semantically similar nodes |
+| `embed_nodes_tool` | `embed_nodes_tool()` | Embed all nodes, update cache (uses configured project dir) |
+| `find_similar_tool` | `find_similar_tool(node_path, top_k?, threshold?)` | Find semantically similar nodes |
 
 `data` is a dict of frontmatter fields. `node_type` and `schema_version` are auto-filled by `create_node_tool`. `body_sections` is an optional dict of `{"## Heading": "content"}`.
 

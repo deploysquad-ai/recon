@@ -18,7 +18,7 @@
 /plugin install recon@deploysquad-ai/recon
 ```
 
-*then run `/recon.setup`, restart Claude Code, and run `/recon`*
+*then `cd` into your project and run `/recon` — the graph is written to the project root.*
 
 ---
 
@@ -82,9 +82,10 @@ Query "which features have specs?" or "what's the spec for Task Board?" — the 
 
 1. Add the marketplace: `/plugin marketplace add deploysquad-ai/recon`
 2. Install the plugin: `/plugin install recon@deploysquad-ai/recon`
-3. Configure your vault: run `/recon.setup` and enter your Obsidian vault path
-4. Restart Claude Code
-5. Run `/recon` — describe your project and watch the graph appear in Obsidian
+3. `cd` into your project (any git repo or directory) and run `/recon` — recon writes the graph to the project root, alongside your code
+4. (Optional) For semantic linking, add `export GEMINI_API_KEY=your-key` to your shell rc (`~/.zshrc` or `~/.bashrc`) and restart Claude Code. The `/recon` preflight prints a tip with this exact instruction when the key is missing. Free key: <https://aistudio.google.com/apikey>
+
+> Upgrading from a separate-vault setup? The next `/recon` run silently re-points to your project root. Your old vault on disk is untouched; `git mv` or copy your old graph into the new project root if you want to keep it. See `CHANGELOG.md` for details.
 
 ---
 

@@ -22,7 +22,7 @@ The graph then feeds focused context back to any AI session via `generate_contex
 /plugin install recon@deploysquad-ai/recon
 ```
 
-Then run `/recon.setup`, restart Claude Code, and run `/recon`.
+Then `cd` into your project and run `/recon` — the graph is written to the project root.
 
 ---
 
@@ -84,7 +84,7 @@ update_node("features/Feature - Task Board.md", {
 
 recon can embed nodes and find semantically similar ones using the Gemini API.
 
-**Claude Code plugin users:** `/recon.setup` prompts for your Gemini API key and writes it to the MCP server config automatically.
+**Claude Code plugin users:** add `export GEMINI_API_KEY=your-key` to your shell rc (`~/.zshrc` or `~/.bashrc`) and restart Claude Code. The MCP server inherits the env from your shell. The `/recon` preflight prints a tip with this exact instruction when the key is missing. Free key: <https://aistudio.google.com/apikey>
 
 **Python library users:**
 

@@ -3,35 +3,59 @@ name: recon
 description: Interactive project graph authoring for Obsidian vaults. Guides users through building a structured project graph by conversing naturally, inferring graph structure, and calling recon-core MCP tools to validate and write nodes.
 ---
 
-## Setup Check
+## Setup Check (Preflight)
 
 **Run this before anything else.**
 
-Call `get_vault_status_tool()`.
+The vault is always the current project root. There are no prompts, no menus, no markers — just resolve the project root, point recon at it, and start authoring.
 
-- If `is_configured` is `false`: do **inline setup** before proceeding.
+### Step 1 — Resolve the project root
 
-  1. Ask: "What's the full path to your Obsidian vault? (e.g. `/Users/yourname/Documents/my-vault`)"
-  2. Once the user provides a path, call `configure_vault_tool(vault_path="<their-path>")`.
-  3. If the tool returns `is_configured: true`: persist the path for future sessions by running:
-     ```bash
-     python3 -c "
-     import json, pathlib
-     p = pathlib.Path.home() / '.claude/settings.json'
-     d = json.loads(p.read_text()) if p.exists() else {}
-     srv = d.setdefault('mcpServers', {}).setdefault('recon', {})
-     srv.setdefault('command', 'uvx')
-     srv.setdefault('args', ['deploysquad-recon-core'])
-     srv.setdefault('env', {})['VAULT_PATH'] = '<expanded-path>'
-     p.write_text(json.dumps(d, indent=2))
-     print('done')
-     "
-     ```
-     Then say: "Connected to `<path>`. Let's build your project graph."
-     Proceed directly into the authoring session — **no restart needed**.
-  4. If the tool returns an error (path doesn't exist): tell the user and ask again.
+```bash
+git rev-parse --show-toplevel 2>/dev/null || pwd
+```
 
-- If `is_configured` is `true`: proceed normally with the authoring session below.
+Capture the output as `<project_root>`.
+
+### Step 2 — Configure the MCP server
+
+Call `configure_vault_tool(vault_path="<project_root>")`. This updates the recon MCP server's in-memory project directory for this session. It must succeed before you call any other recon tool.
+
+### Step 3 — Nudge for Gemini key (only if missing)
+
+The MCP server reads `GEMINI_API_KEY` from its environment. As a child of Claude Code, it inherits whatever shell env Claude Code was launched with — so the canonical place is the user's shell rc (`~/.zshrc`, `~/.bashrc`, etc.), not `~/.claude/settings.json`.
+
+Check the env:
+
+```bash
+[ -n "$GEMINI_API_KEY" ] && echo "set" || echo "missing"
+```
+
+If the result is `missing`, print this notice to the user before continuing:
+
+> Tip: `GEMINI_API_KEY` is not set — semantic linking is disabled (heuristic linking still works). To enable, add `export GEMINI_API_KEY=your-key` to your shell rc (`~/.zshrc` or `~/.bashrc`), then restart Claude Code. Free key: https://aistudio.google.com/apikey
+
+If `set`, print nothing.
+
+### Step 4 — Tip for ideate sessions
+
+Check whether `<project_root>/.ideate/` exists AND no `Project - *.md` file is present at `<project_root>`:
+
+```bash
+[ -d "<project_root>/.ideate" ] && ! ls "<project_root>"/Project\ -\ *.md >/dev/null 2>&1 && echo "ideate-unimported" || echo "ok"
+```
+
+If the result is `ideate-unimported`, print exactly one line:
+
+> Tip: Detected an ideate session — run `/recon.import-ideate` to convert it into a graph instead of starting fresh.
+
+Otherwise print nothing.
+
+### Step 5 — Proceed
+
+Continue directly into the authoring session below. Do not announce that you configured the vault — the happy path is silent.
+
+> **Why no `VAULT_PATH` persistence?** Every recon-touching skill (`/recon`, `/recon.add-feature`, `/recon.import-ideate`) calls `configure_vault_tool` in its preflight. That sets the MCP server's in-memory `PROJECT_DIR` for this session, which is the only thing any tool call needs. Persisting `VAULT_PATH` to `~/.claude/settings.json` would race between concurrent Claude Code sessions on different repos and serves no purpose — skip it.
 
 ---
 
@@ -72,8 +96,10 @@ Before authoring any node of a given type for the first time in this session, ca
 
 ## Folder Structure
 
+The configured vault path *is* the project root. Layout is flat — one project per vault, no `<project-slug>/` subfolder.
+
 ```
-{vault}/{project-slug}/
+{vault}/
   Project - <name>.md
   .graph/
     index.json
@@ -96,6 +122,8 @@ Before authoring any node of a given type for the first time in this session, ca
   features/
     Feature - <name>.md
 ```
+
+In project-local mode, `{vault}` is the project root, so these folders sit alongside code and `.ideate/` in the user's repo.
 
 ## Naming Convention
 
@@ -275,7 +303,7 @@ Given a Feature node, `generate_context_tool` follows these edges:
 ## Output
 
 The output is a Markdown file written to:
-`{vault}/{project-slug}/features/CONTEXT - {feature-name}.md`
+`{vault}/features/CONTEXT - {feature-name}.md`
 
 It contains structured sections: Project, Goals, Version, Module, User Stories, Constraints, Decisions, Dependencies, Related Features.
 
